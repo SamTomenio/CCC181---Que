@@ -1,0 +1,20 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Staff Dashboard</title>
+</head>
+<body>
+    <h1>Staff Queue Dashboard</h1>
+
+    <ul>
+        {% for ticket in tickets %}
+            <li>Ticket {{ ticket }}</li>
+        {% endfor %}
+    </ul>
+
+    <a href="/">Join Queue</a>
+</body>
+</html>
