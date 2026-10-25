@@ -1,20 +1,132 @@
+{% extends "base.html" %}
+{% block title %}Staff dashboard · DockQ{% endblock %}
 
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Staff Dashboard</title>
-</head>
-<body>
-    <h1>Staff Queue Dashboard</h1>
+{% block content %}
+<h1 class="h3 mb-3">Staff dashboard</h1>
 
-    <ul>
-        {% for ticket in tickets %}
-            <li>Ticket {{ ticket }}</li>
-        {% endfor %}
-    </ul>
+<div class="row g-2 mb-3">
+  {% for s in services %}
+  <div class="col-6">
+    <div class="card"><div class="card-body py-2">
+      <span class="fs-3 fw-bold">{{ counts[s.id] }}</span> waiting for {{ s.name|lower }}
+    </div></div>
+  </div>
+  {% endfor %}
+</div>
 
-    <a href="/">Join Queue</a>
-</body>
-</html>
+<form method="get" action="{{ url_for('staff_dashboard') }}" class="row g-2 align-items-end mb-3">
+  <div class="col-8 col-md-4">
+    <label for="filter" class="form-label">Show service</label>
+    <select id="filter" name="service_id" class="form-select">
+      <option value="">All services</option>
+      {% for s in services %}
+        <option value="{{ s.id }}" {% if selected == s.id %}selected{% endif %}>{{ s.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-4 col-md-auto">
+    <button type="submit" class="btn btn-outline-primary w-100">Filter</button>
+  </div>
+</form>
+
+<form method="post" action="{{ url_for('call_next') }}" class="row g-2 align-items-end mb-4">
+  <input type="hidden" name="service_id" value="{{ selected or '' }}">
+  <div class="col-4 col-md-2">
+    <label for="bay" class="form-label">Bay number</label>
+    <input id="bay" name="bay" type="text" class="form-control form-control-lg">
+  </div>
+  <div class="col-8 col-md-3">
+    <label for="arrive_by" class="form-label">Arrive by (optional)</label>
+    <input id="arrive_by" name="arrive_by" type="time" class="form-control form-control-lg">
+  </div>
+  <div class="col-12 col-md-auto">
+    <button type="submit" class="btn btn-primary btn-lg w-100">Call next</button>
+  </div>
+</form>
+
+<div class="table-responsive">
+  <table class="table align-middle">
+    <caption>Trucks waiting or called, in order of arrival</caption>
+    <thead>
+      <tr>
+        <th scope="col">#</th><th scope="col">Plate</th><th scope="col">Driver</th>
+        <th scope="col">Service</th><th scope="col">Status</th><th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for t in queue %}
+      <tr>
+        <th scope="row">{{ t.number }}</th>
+        <td class="fw-bold">{{ t.plate }}</td>
+        <td>{{ t.driver }}</td>
+        <td>{{ names[t.service_id] }}</td>
+        <td>
+          <span class="badge text-bg-{{ 'success' if t.status == 'called' else 'warning' }}">{{ t.status|capitalize }}</span>
+          {% if t.bay %} Bay {{ t.bay }}{% endif %}
+          {% if t.arrive_by %}<div class="small text-body-secondary">Arrive by {{ t.arrive_by }}</div>{% endif %}
+        </td>
+        <td class="text-nowrap">
+            {% if t.status in ('waiting', 'called') %}
+          <form method="post" class="d-inline-flex gap-1 align-items-center me-2"
+                action="{{ url_for('staff_action', ticket_id=t.number, action='call') }}">
+            <input type="text" name="bay" class="form-control form-control-sm" style="width:4.5rem"
+                   placeholder="Bay" aria-label="Bay for ticket {{ t.number }}">
+            <input type="time" name="arrive_by" class="form-control form-control-sm" style="width:7.5rem"
+                   aria-label="Arrive by time for ticket {{ t.number }}">
+            <button class="btn btn-outline-primary" aria-label="Call ticket {{ t.number }}">{{ 'Update' if t.status == 'called' else 'Call' }}</button>
+          </form>
+          {% endif %}
+          <form method="post" class="d-inline" action="{{ url_for('staff_action', ticket_id=t.number, action='serve') }}">
+            <button class="btn btn-success" aria-label="Mark ticket {{ t.number }} as served">Serve</button>
+          </form>
+          <form method="post" class="d-inline" action="{{ url_for('staff_action', ticket_id=t.number, action='no-show') }}">
+            <button class="btn btn-outline-danger" aria-label="Mark ticket {{ t.number }} as no-show">No-show</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" class="text-center text-body-secondary py-4">No trucks waiting right now.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<h2 class="h4 mt-5">Archive</h2>
+<div class="table-responsive">
+  <table class="table align-middle">
+    <caption>Finished tickets (served or no-show), newest first</caption>
+    <thead>
+      <tr>
+        <th scope="col">#</th><th scope="col">Plate</th><th scope="col">Driver</th>
+        <th scope="col">Service</th><th scope="col">Result</th>
+        <th scope="col">Joined</th><th scope="col">Finished</th>
+        <th scope="col">Driver OK</th><th scope="col">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for t in archive %}
+      <tr>
+        <th scope="row">{{ t.number }}</th>
+        <td class="fw-bold">{{ t.plate }}</td>
+        <td>{{ t.driver }}</td>
+        <td>{{ names[t.service_id] }}</td>
+        <td>
+          <span class="badge text-bg-{{ 'secondary' if t.status == 'served' else 'danger' }}">{{ t.status|capitalize }}</span>
+        </td>
+        <td class="text-nowrap">{{ t.joined_at or '—' }}</td>
+        <td class="text-nowrap">{{ t.closed_at or '—' }}</td>
+        <td class="text-nowrap">{{ t.driver_ok_at or 'Not yet' }}</td>
+        <td>
+          <form method="post" action="{{ url_for('staff_delete', ticket_id=t.number) }}"
+                onsubmit="return confirm('Delete ticket #{{ t.number }} permanently?');">
+            <button class="btn btn-outline-danger" aria-label="Delete archived ticket {{ t.number }}">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="9" class="text-center text-body-secondary py-4">Nothing archived yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
