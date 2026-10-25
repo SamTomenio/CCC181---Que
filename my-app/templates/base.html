@@ -26,6 +26,15 @@
                {% if request.endpoint == 'join_form' %}aria-current="page"{% endif %}
                href="{{ url_for('join_form') }}">Join the queue</a>
           </li>
+          {% if request.endpoint != 'staff_dashboard' %}
+          <li class="nav-item">
+            <button class="nav-link" type="button" data-bs-toggle="offcanvas"
+                    data-bs-target="#myTickets" aria-controls="myTickets">
+              My tickets
+              {% if my_archive %}<span class="badge text-bg-light">{{ my_archive|length }}</span>{% endif %}
+            </button>
+          </li>
+          {% endif %}
           <li class="nav-item">
             <a class="nav-link {% if request.endpoint == 'staff_dashboard' %}active{% endif %}"
                {% if request.endpoint == 'staff_dashboard' %}aria-current="page"{% endif %}
@@ -35,6 +44,34 @@
       </div>
     </div>
   </nav>
+
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="myTickets" aria-labelledby="myTicketsLabel">
+    <div class="offcanvas-header">
+      <h2 class="offcanvas-title h5" id="myTicketsLabel">My archived tickets</h2>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+      {% if my_archive %}
+      <div class="list-group">
+        {% for t in my_archive %}
+        <a class="list-group-item list-group-item-action"
+           href="{{ url_for('ticket', ticket_id=t.number) }}">
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="fw-bold">#{{ t.number }} · {{ t.plate }}</span>
+            <span class="badge text-bg-{{ 'secondary' if t.status == 'served' else 'danger' }}">{{ t.status|capitalize }}</span>
+          </div>
+          <div class="small text-body-secondary">{{ service_names[t.service_id] }}</div>
+          <div class="small text-body-secondary">Archived {{ t.driver_ok_at }}</div>
+        </a>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="text-body-secondary mb-0">
+        No archived tickets yet. After a ticket is served, tap <strong>OK</strong> on its page and it will appear here.
+      </p>
+      {% endif %}
+    </div>
+  </div>
 
   <main id="main" class="container my-4 flex-grow-1">
     {% with messages = get_flashed_messages(with_categories=true) %}
