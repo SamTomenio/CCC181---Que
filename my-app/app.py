@@ -58,10 +58,8 @@ def describe(t):
     if t["status"] == "waiting":
         message = "You're next!" if ahead == 0 else f"{ahead} truck{'s' if ahead != 1 else ''} ahead of you"
     elif t["status"] == "called":
-        message = (f"Please proceed to bay {t['bay']}." if t.get("bay")
-                   else "You are called. Please proceed to the dock.")
-        if t.get("arrive_by"):
-            message += f" Arrive by {t['arrive_by']}."
+        # Bay and arrive-by time are shown in the green box on the ticket page
+        message = "" if (t.get("bay") or t.get("arrive_by")) else "You are called. Please proceed to the dock."
     elif t["status"] == "served":
         message = "Done. Thank you!"
     else:
@@ -69,6 +67,8 @@ def describe(t):
     return {"status": t["status"], "label": STATUS_LABELS[t["status"]],
             "color": STATUS_COLORS[t["status"]], "message": message,
             "bay": t.get("bay"), "arrive_by": t.get("arrive_by")}
+
+
 @app.context_processor
 def inject_my_archive():
     """Makes the driver's archived tickets available to every page (for the slide-in panel)."""
@@ -218,6 +218,27 @@ def call_next():
         t["arrive_by"] = arrive_by
         extra = f", arrive by {arrive_by}" if arrive_by else ""
         flash(f"Truck {t['plate']} (ticket #{t['number']}) called{extra}.", "info")
+    return redirect(url_for("staff_dashboard", service_id=service_id))
+
+
+@app.post("/staff/call-selected")
+def call_selected():
+    ids = request.form.getlist("ticket_ids", type=int)
+    bay = request.form.get("bay", "").strip()
+    arrive_by = format_time(request.form.get("arrive_by", ""))
+    service_id = request.form.get("service_id", type=int)
+
+    chosen = [t for t in TICKETS if t["number"] in ids and t["status"] in ("waiting", "called")]
+    if not chosen:
+        flash("Tick at least one truck first.", "warning")
+    else:
+        for t in chosen:
+            t["status"] = "called"
+            t["bay"] = bay or None
+            t["arrive_by"] = arrive_by
+        plates = ", ".join(t["plate"] for t in chosen)
+        extra = f", arrive by {arrive_by}" if arrive_by else ""
+        flash(f"{len(chosen)} truck(s) called{extra}: {plates}.", "info")
     return redirect(url_for("staff_dashboard", service_id=service_id))
 
 

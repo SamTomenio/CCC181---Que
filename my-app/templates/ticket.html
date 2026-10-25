@@ -15,9 +15,9 @@
 
         <div id="live-status" aria-live="polite">
           <span id="status-badge" class="badge fs-5 text-bg-{{ info.color }}">{{ info.label }}</span>
-          <p id="position-text" class="fs-4 mt-3 mb-0">{{ info.message }}</p>
+          <p id="position-text" class="fs-4 mt-3 mb-0 {% if not info.message %}d-none{% endif %}">{{ info.message }}</p>
 
-          <div id="call-details" class="alert alert-success mt-3 mb-0 {% if ticket.status != 'called' %}d-none{% endif %}">
+          <div id="call-details" class="alert alert-success mt-3 mb-0 {% if ticket.status != 'called' or (not ticket.bay and not ticket.arrive_by) %}d-none{% endif %}">
             <div class="fs-5">
               <span id="bay-line" class="{% if not ticket.bay %}d-none{% endif %}">
                 Go to <strong>Bay <span id="bay-value">{{ ticket.bay or '' }}</span></strong>
@@ -53,6 +53,15 @@
         {% endif %}
       </div>
     </div>
+
+    {# Hint: where to find archived tickets #}
+    <p class="text-center small text-body-secondary mt-3 mb-0 d-md-none">
+      Your archived tickets are saved under <strong>My tickets</strong>.
+      Tap the <strong>&#9776; menu button</strong> at the top right to open it.
+    </p>
+    <p class="text-center small text-body-secondary mt-3 mb-0 d-none d-md-block">
+      Your archived tickets are saved under <strong>My tickets</strong> in the top menu.
+    </p>
   </div>
 </div>
 {% endblock %}
@@ -66,14 +75,18 @@
       const res = await fetch(statusUrl);
       if (!res.ok) return;
       const data = await res.json();
+
       const badge = document.getElementById("status-badge");
       badge.textContent = data.label;
       badge.className = "badge fs-5 text-bg-" + data.color;
-      document.getElementById("position-text").textContent = data.message;
+
+      const positionText = document.getElementById("position-text");
+      positionText.textContent = data.message;
+      positionText.classList.toggle("d-none", !data.message);
 
       // Bay and arrive-by box
       const box = document.getElementById("call-details");
-      box.classList.toggle("d-none", data.status !== "called");
+      box.classList.toggle("d-none", data.status !== "called" || (!data.bay && !data.arrive_by));
       document.getElementById("bay-value").textContent = data.bay || "";
       document.getElementById("bay-line").classList.toggle("d-none", !data.bay);
       document.getElementById("arrive-value").textContent = data.arrive_by || "";

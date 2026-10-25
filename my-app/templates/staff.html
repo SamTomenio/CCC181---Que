@@ -29,7 +29,7 @@
   </div>
 </form>
 
-<form method="post" action="{{ url_for('call_next') }}" class="row g-2 align-items-end mb-4">
+<form id="bulk-form" method="post" action="{{ url_for('call_next') }}" class="row g-2 align-items-end mb-2">
   <input type="hidden" name="service_id" value="{{ selected or '' }}">
   <div class="col-4 col-md-2">
     <label for="bay" class="form-label">Bay number</label>
@@ -39,16 +39,24 @@
     <label for="arrive_by" class="form-label">Arrive by (optional)</label>
     <input id="arrive_by" name="arrive_by" type="time" class="form-control form-control-lg">
   </div>
-  <div class="col-12 col-md-auto">
-    <button type="submit" class="btn btn-primary btn-lg w-100">Call next</button>
+  <div class="col-12 col-md-auto d-flex gap-2">
+    <button type="submit" class="btn btn-primary btn-lg flex-fill">Call next</button>
+    <button type="submit" id="call-selected" formaction="{{ url_for('call_selected') }}"
+            class="btn btn-outline-primary btn-lg flex-fill" disabled>Call selected (0)</button>
   </div>
 </form>
+<p class="small text-body-secondary mb-4">
+  Tick trucks in the table (or the top box to select all), then press <strong>Call selected</strong>.
+  The bay and time above apply to every ticked truck.
+</p>
 
 <div class="table-responsive">
   <table class="table align-middle">
     <caption>Trucks waiting or called, in order of arrival</caption>
     <thead>
       <tr>
+        <th scope="col"><input type="checkbox" id="select-all" class="form-check-input"
+                               aria-label="Select all trucks in the table"></th>
         <th scope="col">#</th><th scope="col">Plate</th><th scope="col">Driver</th>
         <th scope="col">Service</th><th scope="col">Status</th><th scope="col">Actions</th>
       </tr>
@@ -56,6 +64,8 @@
     <tbody>
       {% for t in queue %}
       <tr>
+        <td><input type="checkbox" class="form-check-input" name="ticket_ids" value="{{ t.number }}"
+                   form="bulk-form" aria-label="Select ticket {{ t.number }}"></td>
         <th scope="row">{{ t.number }}</th>
         <td class="fw-bold">{{ t.plate }}</td>
         <td>{{ t.driver }}</td>
@@ -66,7 +76,7 @@
           {% if t.arrive_by %}<div class="small text-body-secondary">Arrive by {{ t.arrive_by }}</div>{% endif %}
         </td>
         <td class="text-nowrap">
-            {% if t.status in ('waiting', 'called') %}
+          {% if t.status in ('waiting', 'called') %}
           <form method="post" class="d-inline-flex gap-1 align-items-center me-2"
                 action="{{ url_for('staff_action', ticket_id=t.number, action='call') }}">
             <input type="text" name="bay" class="form-control form-control-sm" style="width:4.5rem"
@@ -85,7 +95,7 @@
         </td>
       </tr>
       {% else %}
-      <tr><td colspan="6" class="text-center text-body-secondary py-4">No trucks waiting right now.</td></tr>
+      <tr><td colspan="7" class="text-center text-body-secondary py-4">No trucks waiting right now.</td></tr>
       {% endfor %}
     </tbody>
   </table>

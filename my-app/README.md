@@ -1,137 +1,125 @@
-# ClinicQ: Hello, Flask
+# DockQ: Truck Loading and Unloading Queue
 
-Starter Flask app for **CCC181 Week 2: Git, GitHub & Flask Foundations**.
-It shows the project structure, routes, templates and static files from the slides.
+DockQ is a queue system for trucks waiting to load or unload at Iligan City. Drivers join from their
+phone and see their place in line; dock staff call, serve or mark no-show. Run it and immediately use
+the system.
+
+Built for **CCC181 Week 3: Start Your Own Queue App** with Flask, Jinja and Bootstrap 5.
+
+> **Note:** the staff dashboard has no login yet (staff login comes in a later week), so anyone who
+> opens `/staff` can use it. Data is kept in memory, so it resets every time the server restarts.
+> Week 4 moves it into PostgreSQL.
+
+## Who it is for
+
+| Person | Persona | What they do |
+| --- | --- | --- |
+| Driver (person waiting) | Ramon | Joins the queue, sees ticket number, trucks ahead, bay and arrive-by time, then archives the ticket |
+| Dock staff (dispatcher) | Liza | Sees the waiting list, calls trucks to a bay, marks them served or no-show, and manages the archive |
+
+## Features
+
+**Driver side**
+- **Join the queue** for Loading or Unloading (driver name, truck plate in capital letters, company, service)
+- **My place** page: large ticket number, status badge, trucks ahead, bay and arrive-by time, and a Leave button
+- Page updates itself every 10 seconds, with no reload
+- **OK** button after being served, with date and time, then **Delete ticket**
+- **My tickets** slide-in panel with archived tickets (from the top menu)
+
+**Staff side**
+- Waiting count per service
+- Filter by service
+- **Call next**, or tick trucks (or select all) and press **Call selected**, with a bay number and an arrive-by time
+- Per-row **Call / Update**, **Serve** and **No-show**
+- **Archive** table with joined, finished and driver-OK times, and a Delete button
 
 ## Project structure
 
 ```
-my-app/
-├── app.py              # creates the app and defines routes
-├── requirements.txt    # packages to rebuild the environment
-├── .gitignore          # keeps .venv, caches and secrets out of Git
-├── .venv/              # your virtual environment (not committed)
-├── templates/          # Jinja2 HTML files for render_template()
-│   ├── base.html       # shared layout
-│   ├── index.html      # home page
-│   └── ticket.html     # page for /queue/<ticket_id>
-└── static/             # served at /static/...
-    ├── css/style.css
-    └── js/main.js
+app.py                # routes and in-memory data
+requirements.txt      # packages to rebuild the environment
+.gitignore            # keeps .venv and caches out of Git
+templates/
+├── base.html         # shared layout, navbar, My tickets panel
+├── index.html        # home page
+├── join.html         # join form with validation
+├── ticket.html       # My place
+└── staff.html        # staff dashboard
+static/
+├── css/style.css
+└── js/main.js        # double-submit guard, plate capitals, select-all
+docs/week3/           # personas, wireframes, review, accessibility, usability test, report
 ```
 
 ## Routes
 
-| URL | View function | What you see |
-|---|---|---|
-| `/` | `index()` | "Hello, Ana!" and a list of tickets, rendered with `index.html` |
-| `/queue/<int:ticket_id>` | `ticket()` | A page for that ticket, e.g. `/queue/12` |
-| `/hello` | `hello()` | The plain text "Hello, CCC181!" |
+| URL | What you see |
+| --- | --- |
+| `/` | Welcome page with a Join the queue button |
+| `/join` | Join form (GET shows it, POST submits it) |
+| `/queue/<id>` | My place for one ticket (404 if it does not exist) |
+| `/queue/<id>/status.json` | Live status used by My place |
+| `/queue/<id>/leave`, `/ok`, `/delete` | Driver actions (POST) |
+| `/staff` | Staff dashboard |
+| `/staff/call-next`, `/staff/call-selected` | Call trucks (POST) |
+| `/staff/tickets/<id>/<call\|serve\|no-show>` | Row actions (POST) |
+| `/staff/tickets/<id>/delete` | Delete an archived ticket (POST) |
 
-Try `/queue/abc`: the `int` converter only accepts numbers, so Flask returns 404.
+## Run it
 
-## 1. Set up the Python environment
+You need Python 3.11 or newer. Run these commands in the folder that contains `app.py`.
+
+**With uv (recommended)**
 
 ```bash
-# create (once per project)
-python -m venv .venv
+uv venv
+uv pip install -r requirements.txt
+uv run python -m flask --app app run --debug
+```
 
-# activate (every new terminal)
+**With plain Python**
+
+```bash
+python -m venv .venv
 .venv\Scripts\activate          # Windows
 source .venv/bin/activate       # macOS/Linux
-
-# install the packages
 pip install -r requirements.txt
-```
-
-Your prompt shows `(.venv)` when the environment is active. Some systems use `python3` or `py` instead of `python`.
-If PowerShell blocks the activate script, run `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` once, or use Command Prompt.
-
-If you add more packages later, record them with:
-
-```bash
-pip freeze > requirements.txt
-```
-
-## 2. Run the app
-
-```bash
 flask --app app run --debug
 ```
 
-Open http://127.0.0.1:5000. With `--debug`, the server reloads every time you save a file. Never use debug mode in production.
+Then open http://127.0.0.1:5000.
 
-## 3. Put it on GitHub
+- Stop the server with `Ctrl+C`.
+- To try it on a phone on the same Wi-Fi, add `--host 0.0.0.0` and open `http://<your-laptop-ip>:5000`.
+- `--debug` reloads the server when you save a file. Never use it in production.
 
-### Once per computer
+## Try it in 1 minute
+
+1. Open `/join`, enter a driver, a plate such as `DEF 9012`, a company and a service, and press **Get a ticket**.
+2. In another tab open `/staff`, tick your truck, enter a bay and an arrive-by time, and press **Call selected**.
+3. Back on My place, the status changes to **Called** within 10 seconds, with the bay and time.
+4. On Staff press **Serve**, then on My place press **OK** and open **My tickets**.
+
+## Sample data
+
+The app starts with two sample trucks (tickets #1 and #2) so the staff dashboard is not empty.
+Edit `SERVICES` and `TICKETS` at the top of `app.py` to change them.
+
+## Git workflow
+
+Work is done on `feature/week3-interface`, merged into `main` with a pull request, and tagged `week3`.
 
 ```bash
-git config --global user.name "Your Name"
-git config --global user.email you@g.msuiit.edu.ph   # same email as your GitHub account
-git config --list
-```
-
-### Create the local repository and first commit
-
-```bash
-git init
-git branch -M main
-git status              # .venv should NOT appear, thanks to .gitignore
+git switch -c feature/week3-interface
 git add .
-git commit -m "Add Flask starter app"
+git commit -m "Describe the change (#issue)"
+git push -u origin feature/week3-interface
 ```
 
-### Connect to GitHub and push
+## Roadmap
 
-1. On GitHub, create a new **empty** repository (no README, no .gitignore).
-2. Copy its URL, then:
-
-```bash
-git remote add origin <repo-url>
-git push -u origin main
-```
-
-GitHub does not accept your account password for Git over HTTPS. Sign in through Git Credential Manager or the GitHub CLI, or use a personal access token or SSH key.
-
-### Everyday loop
-
-```bash
-git pull origin main     # before you start working
-git status
-git add <file>
-git commit -m "Add join-queue form"
-git push origin main     # when you have commits to share
-```
-
-## 4. Lab: ship it through a pull request
-
-1. On GitHub, open an issue: **"Set up Flask starter app"**.
-2. Pull the latest `main`, then create a branch:
-   ```bash
-   git switch main
-   git pull origin main
-   git switch -c feature/flask-setup
-   ```
-3. Create `.venv`, install Flask, write `requirements.txt` and `.gitignore`.
-4. Build `app.py` with a home route and one dynamic route, rendered with `base.html` and `index.html`.
-5. Commit in small steps, then push the branch:
-   ```bash
-   git push -u origin feature/flask-setup
-   ```
-6. On GitHub, click **Compare & pull request** and write `Closes #N` in the description (N is your issue number). Merge it, then:
-   ```bash
-   git switch main
-   git pull origin main
-   ```
-
-**Early finishers:** add another static CSS rule linked with `url_for`, or a third route based on one Must feature from your project milestone.
-
-## Commit message tips
-
-- Short summary in the imperative: "Add...", "Fix..."
-- One logical change per commit
-- Commit early and often
-- Good: "Add join-queue form". Unhelpful: "update", "asdf", "final na talaga".
-
-
-“DockQ is a queue system for trucks waiting to load or unload at Iligan City. Drivers join from their phone and see their place in line; dock staff call, serve or mark no-show. Run it and Immediately use the system."
+| Week | Change |
+| --- | --- |
+| 4 | Tickets move from a Python list into PostgreSQL |
+| 6 | The same data is served by a REST API |
+| 8 | A Flutter app talks to the API |
