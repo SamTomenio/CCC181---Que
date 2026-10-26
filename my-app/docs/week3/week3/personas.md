@@ -1,23 +1,25 @@
 ## Ramon, the driver (person waiting)
 
-> *(paraphrased from interview)* "There's no room for trucks to line up, so I have to stay in my cab
-> or near the gate just to know when it's my turn."
+> "Lisod na gali mag hulat liny ana tawo truck pa, kapoy baya mag hulat sa liya nya nahan naka kaon tas dile ka kahawa
+> pwede man ka magdala pero perwisyo man kaayo, sayang oras ba naa pa unta ka lain mabuhat sayang pud gas sa truck kami baya kasaban if kulang kay
+> monitor na nila."
 
-If you have the driver's exact words, replace this with the real quote in quotation marks.
+
 
 | | |
 | --- | --- |
 | **Photo or sketch** | ![Persona image](screenshots/ramon-driver.jpg) |
-| **Age, role and background** | 41, truck driver who delivers to and loads at a feed-mill loading bay in Iligan City, [number] trips a day *(interview)*. |
+| **Age, role and background** | 41, truck driver who delivers to and loads at a feed-mill loading bay in Iligan City, 3-5 trips a week. |
 | **Goals** | 1. Know when his turn comes so he does not have to wait at the gate. 2. Load quickly and start the next trip on time. 3. Save fuel by not idling in a long wait. |
-| **Frustrations** | 1. The loading area is too small for trucks to line up, so there is no visible order *(interview)*. 2. Loading schedules give no exact waiting time, so he cannot tell when to arrive *(interview)*. 3. Long waits mean engine idling, wasted fuel and delayed later trips *(interview)*. |
+| **Frustrations** | 1. The loading area is too small for trucks to line up, so nobody can easily leave. 2. Loading schedules give no exact waiting time, so he cannot tell when to arrive. 3. Long waits mean engine idling, wasted fuel and delayed later trips. |
 | **Devices and context** | Smartphone, used one-handed from the cab, sometimes while doing paperwork or resting. Outdoors in sun glare, with mobile data that may be slow. |
 | **Tech comfort** | [Low / Medium]: he uses a phone daily but should not have to type a lot or learn anything to get a ticket. |
-| **Accessibility needs** | No individual need was recorded in my Week 1 research. As design precautions: strong contrast for sunlight, large tap targets, little typing, short pages for slow data, and status in words, not only color. |
+| **Accessibility needs** | As design precautions: strong contrast for sunlight, large tap targets, little typing, short pages for slow data, and status in words, not only color. |
 
 ### Scenario
 
-Ramon pulls up near the loading bay in the early morning with an empty truck. The loading area is already full, so trucks cannot line up and he does not know how long the wait will be. He opens DockQ on his phone, enters his name, plate number and company, chooses Loading and gets ticket #14. The page tells him "3 trucks ahead of you", so he parks away from the gate and rests. Later his phone shows "Called" with a bay number and an arrive-by time, and he drives in without having stayed at the gate or asked anyone.
+Ramon pulls up near the loading bay in the early morning with an empty truck. and it was already his turn as because before he set off to travel The
+He opens DockQ on his phone, enters his name, plate number and company, chooses Loading and gets ticket #14. The page tells him "3 trucks ahead of you", so he travels and when he arrives his phone shows "Called" with a bay number and an arrive-by time, and he drives in without having stayed at the gate or asked anyone.
 
 ### Top tasks in the app
 
@@ -33,26 +35,25 @@ Ramon pulls up near the loading bay in the early morning with an empty truck. Th
 1. Because Ramon cannot tell when his turn comes and checks his phone one-handed from the cab, my interface must make his ticket number and trucks ahead the biggest thing on My place.
 2. Because he waits away from the gate and may be resting or doing paperwork, my interface must update the status by itself and show the bay and arrive-by time as soon as he is called.
 3. Because he is outdoors with slow data and may wear gloves, my interface must use few fields, large inputs and buttons, high contrast and light pages.
-4. Because he is waiting with little else to do on the screen, my interface must keep archived tickets easy to find (testing showed he did not notice them behind the phone menu).
 
 ---
 
 ## Liza, the dispatcher (staff member)
 
-> *(paraphrased from interview)* "It's hard to cope with a lot of people moving around, and hard to
+> "It's hard to cope with a lot of people moving around, and hard to
 > track them down when they aren't there."
 
 If you have the dispatcher's exact words, replace this with the real quote.
 
 | | |
 | --- | --- |
-| **Photo or sketch** | ![Persona image](screenshots/liza-dispatcher.png) (a stock icon or drawing, not a photo of the real dispatcher) |
-| **Age, role and background** | [age], dispatcher at the loading bay who decides which truck goes in next and tracks who is present *(interview)*. |
+| **Photo or sketch** | ![Persona image](screenshots/liza-dispatcher.jpg) |
+| **Age, role and background** | 28, dispatcher at the loading bay who decides which truck goes in next and tracks who is present. |
 | **Goals** | 1. Keep the loading bay busy by calling the right truck next. 2. Know who is waiting and who has not arrived. 3. Keep loading and unloading trucks in order without chasing people. |
-| **Frustrations** | 1. Many people and trucks moving around, which is hard to cope with *(interview)*. 2. Tracking people down when they are not where she expects *(interview)*. 3. Trucks that are called but absent, which blocks the line. |
+| **Frustrations** | 1. Many people and trucks moving around, which is hard to cope with. 2. Tracking people down when they are not where she expects. 3. Trucks that are called but absent, which blocks the line. |
 | **Devices and context** | [Office computer / tablet] at the bay office, with frequent interruptions from drivers and radio calls. She must read the screen at a glance. |
 | **Tech comfort** | [Medium]: comfortable with basic office software, but she should not have to learn a complicated queue workflow. |
-| **Accessibility needs** | No individual need was recorded in my Week 1 research. As precautions: readable table text, clear focus states, large buttons that are hard to mis-click, and explicit messages after each action. |
+| **Accessibility needs** | As precautions: readable table text, clear focus states, large buttons that are hard to mis-click, and explicit messages after each action. |
 
 ### Scenario
 
