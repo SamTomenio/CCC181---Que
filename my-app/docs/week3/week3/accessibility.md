@@ -48,12 +48,12 @@ I tested using only Tab, Shift+Tab, Enter, Space and the arrow keys.
 
 | Check | Join | My place | Staff |
 | --- | --- | --- | --- |
-| Every input has a visible label | ✅ Driver name, plate, company and service each have a `<label>` | n/a (no inputs) | ✅ Service filter, Bay and Arrive by have labels; row inputs have `aria-label` |
-| Error messages say what to do, in text | ✅ e.g. "Use capital letters, numbers, spaces or hyphens only (4 to 12 characters)." | n/a (no form) | n/a (no form errors) |
+| Every input has a visible label | ✅ Every place that needs imput has label and is obvious | n/a | ✅ Every place that needs imput has label and is obvious|
+| Error messages say what to do, in text | ✅ Marked highlighted and cannot proceed  | n/a (no form) | n/a (no form errors) |
 | Status is shown in words, not only color | n/a | ✅ The badge says "Waiting", "Called", "Served" or "No-show" | ✅ Badges use words, plus bay and arrive-by time |
-| Readable at 375 px with no sideways page scroll | [ ] | [ ] | [ ] Tables scroll inside `table-responsive`, not the page |
-| Buttons about 44 × 44 px on a phone | [ ] "Get a ticket" is full width and large | [ ] "Leave the queue" and "OK" are `btn-lg` | [ ] Row buttons and the small Bay/time inputs (`-sm`): [fix if flagged] |
-| One `<h1>` and headings in order | [ ] | [ ] | [ ] |
+| Readable at 375 px with no sideways page scroll | n/a  | n/a  | Tables scroll inside `table-responsive`, not the page |
+| Buttons about 44 × 44 px on a phone | ✅ "Get a ticket" is full width and large | ✅ "Leave the queue" and "OK" are `btn-lg` | ✅ Row buttons and the small Bay/time inputs (`-sm`): [fix if flagged] |
+| One `<h1>` and headings in order | ✅ | ✅ | ✅ |
 | `<html lang="en">` is set | ✅ Set once in `base.html` | ✅ | ✅ |
 
 Mark each `[ ]` ✅ or ❌ with the fix, after checking it in Chrome at 375 px.
