@@ -22,7 +22,7 @@ After: ![after](screenshots/fix-after.jpg)
 
 
 
-Participant: [Truck Driver]
+Participant: [Dispatcher]
 Device: [Laptop]   Date: [October 24, 2026]
 
 | Task | Finished? (yes / with help / no) | Time | Where they hesitated / what they said |
