@@ -4,15 +4,10 @@
 inputs and one full-width "Get a ticket" button. This follows Ramon's rule that he types little,
 one-handed, in a cab. Errors show in text under each field and keep what he typed.
 
-**Problem:** The plate rules (capital letters, numbers, spaces and hyphens, 4 to 12 characters) only
-appear after a failed submit, and the service dropdown says "Loading or unloading?" without saying
-what each means. This breaks *error prevention*: a driver in sunlight finds out the format only by
-getting it wrong.
+  **Problem:** N/A It was straigthforwad for him
 
 **Change:**
-- Keep the plate field forcing capitals as the driver types.
-- Show a clear placeholder and keep the two service names as plain words, "Loading" and "Unloading".
-  
+- N/A It was straigthforwad for him
 ---
 
 ## Screen 2: My Ticket
@@ -41,12 +36,7 @@ is the largest button, near the top. This follows Liza's rule that the action sh
 the easiest one to reach. Plates are in bold, and the status uses words plus the bay and arrive-by
 time.
 
-**Problem:** Each row has its own Bay box, time box and Call button, next to Serve and No-show, and
-there is also Call next and Call selected at the top. On a phone this is crowded, the small inputs
-are hard to tap, and **Serve** sits right next to **No-show**, so one wrong tap moves a truck to the
-archive. This breaks *error prevention*.
+**Problem:** N/A - No problems encountered
 
-**Change:**
-- Keep the bulk controls (Call next, tick-to-select, Call selected) above the table, and keep
-  service and counter filters at the top.
-- Show an empty-state message when nobody is waiting.
+**Change:** N/A - No problems encountered
+
