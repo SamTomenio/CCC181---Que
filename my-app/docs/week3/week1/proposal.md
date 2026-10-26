@@ -11,16 +11,20 @@
 **Interviews** (who, role, when; no full names):
 | # | Role | Date | Key findings |
 | --- | --- | --- | --- |
-| 1 | Truck driver | [October 24, 2026] | [what they said] |
-| 2 | Dispatcher | [October 24, 2026] | [what they said] |
+| 1 | Truck driver | [October 24, 2026] | The limited loading area prevents trucks from lining up physically. Drivers must stay in their cabs or near the gate to know when their turn arrives. Extended waiting also increases fuel consumption and delays subsequent trips. |
+| 2 | Dispatcher | [October 24, 2026] | Its hard to cope with a lot of people going about and tracking them down if they arent there |
 
 **Observation:** [what you saw while visiting: how the line forms, how trucks are called, how long they wait]
 
 **Real quotes:** "[quote from a driver]", "[quote from a dispatcher]"
 
 ## 3. User profiles
-- **Driver:** [age range, device, context, goals, frustrations]
-- **Dispatcher:** [role, device, context, goals, frustrations]
+- **Driver:** 25-50s, uses a phone possibly with one hand as driving, waits in the cab or near the gate, often doing
+  paperwork or resting. Goals: get loaded quickly, know when to come in, save fuel. Frustrations:
+  no exact waiting time, must stay close to the gate, idling wastes fuel and time.
+- **Dispatcher:** 25-50s, uses Phone,Laptop or Desktop at the office or gate. Goals: keep the bay busy and
+  call the right truck. Frustrations: many people moving around, trucks not there when called,
+  tracking them down.
 
 ## 4. Requirements
 **Functional requirements** (priority: Must / Should / Could):
@@ -40,4 +44,4 @@ usable one-handed.
 
 ## 5. Scope and milestones
 - **MVP (this stage):** join queue, My place, staff dashboard
-- **Later:** database, REST API, mobile app, staff login
+- **Later:** database (Week 4), REST API (Week 6), mobile app (Week 8), staff login
