@@ -17,8 +17,8 @@ The task was simple and most importantly straighforward a bright label and forwa
 ## The fix
 Add a note where it says someone can access the archive in the menu button
 
-Before: ![before](screenshots/fix-before.png)
-After: ![after](screenshots/fix-after.png)
+Before: ![before](screenshots/fix-before.jpg)
+After: ![after](screenshots/fix-after.jpg)
 
 
 
