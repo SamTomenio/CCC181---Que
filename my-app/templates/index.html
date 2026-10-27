@@ -1,0 +1,9 @@
+   {% extends "base.html" %}
+   {% block title %}DockQ{% endblock %}
+   {% block content %}
+   <div class="text-center py-5">
+     <h1 class="display-5 fw-bold">DockQ</h1>
+     <p class="lead">Get in line for loading or unloading from your truck and see when it's your turn.</p>
+     <a class="btn btn-primary btn-lg" href="{{ url_for('join_form') }}">Join the queue</a>
+   </div>
+   {% endblock %}
