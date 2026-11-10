@@ -1,4 +1,4 @@
-# Week 3 Report: Qonnect Interface
+# Week 3 Report: DockQ Interface
 
 ## Title details
 
