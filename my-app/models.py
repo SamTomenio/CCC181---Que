@@ -2,7 +2,7 @@ from datetime import datetime, time
 
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import (CheckConstraint, DateTime, ForeignKey, Index,
-                        String, Time, func, text, true)
+                        String, Time, false, func, text, true)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 db = SQLAlchemy()
@@ -25,7 +25,8 @@ class Truck(db.Model):
     )
     id: Mapped[int] = mapped_column(primary_key=True)
     plate: Mapped[str] = mapped_column(String(12), unique=True)
-    vehicle_type: Mapped[str] = mapped_column(String(20), default="other")
+    vehicle_type: Mapped[str] = mapped_column(
+        String(20), default="other", server_default="other")
     company_id: Mapped[int | None] = mapped_column(
         ForeignKey("companies.id", ondelete="RESTRICT"))
     company: Mapped["Company | None"] = relationship(back_populates="trucks")
@@ -55,7 +56,8 @@ class Ticket(db.Model):
     )
     id: Mapped[int] = mapped_column(primary_key=True)
     driver_name: Mapped[str] = mapped_column(String(80))
-    status: Mapped[str] = mapped_column(String(10), default="waiting")
+    status: Mapped[str] = mapped_column(
+        String(10), default="waiting", server_default="waiting")
     bay: Mapped[str | None] = mapped_column(String(20))
     arrive_by: Mapped[time | None] = mapped_column(Time)
     created_at: Mapped[datetime] = mapped_column(
@@ -63,7 +65,8 @@ class Ticket(db.Model):
     called_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     closed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     driver_ok_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
-    driver_deleted: Mapped[bool] = mapped_column(default=False)
+    driver_deleted: Mapped[bool] = mapped_column(
+        default=False, server_default=false())
     truck_id: Mapped[int] = mapped_column(
         ForeignKey("trucks.id", ondelete="RESTRICT"))
     service_id: Mapped[int] = mapped_column(
