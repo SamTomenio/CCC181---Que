@@ -1,6 +1,6 @@
 # Persistence proof
 
-This tests **NFR-TODO-A** (no ticket is lost when the server or the database restarts).
+This tests **NFR-01** (no ticket is lost when the server or the database restarts).
 
 ## 11a. The restart test
 
@@ -24,7 +24,7 @@ This tests **NFR-TODO-A** (no ticket is lost when the server or the database res
    ![A driver's ticket page after restart](screenshots/ticket-after.JPG)
    ![SQL after restart](screenshots/table-after-restart.JPG)
 
-**Result:** TODO-B (for example: "All N tickets, their statuses and their times were exactly the same after the restart.") NFR-TODO-A passed. The data lives in the `pgdata` Docker volume, which `docker compose down` does not delete.
+**Result:** All N tickets, their statuses and their times were exactly the same after the restart. NFR-01 passed. The data lives in the `pgdata` Docker volume, which `docker compose down` does not delete.
 
 ## 11b. Rebuild from scratch
 
@@ -37,4 +37,4 @@ python -m flask --app app db upgrade
 python -m flask --app app seed
 ```
 
-**Result:** TODO-C (for example: "All three migrations ran in order, `\dt` listed companies, trucks, services and tickets, the seed added Loading and Unloading, and I could open the app, see both services on the join form and join the queue.")
+**Result:** "All three migrations ran in order, `\dt` listed companies, trucks, services and tickets, the seed added Loading and Unloading, and I could open the app, see both services on the join form and join the queue.
