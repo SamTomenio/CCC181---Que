@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Manage services{% endblock %}
+{% block content %}
+<h1 class="h3 mb-3">Manage services</h1>
+
+<form method="post" action="{{ url_for('service_create') }}" class="row g-2 mb-4">
+  <div class="col-12 col-md-5">
+    <label for="new-name" class="form-label">New service name</label>
+    <input id="new-name" name="name" class="form-control" maxlength="60" required>
+  </div>
+  <div class="col-8 col-md-3">
+    <label for="new-minutes" class="form-label">Average minutes</label>
+    <input id="new-minutes" name="avg_minutes" type="number" min="1" class="form-control" value="20" required>
+  </div>
+  <div class="col-4 col-md-2 d-flex align-items-end">
+    <button class="btn btn-primary w-100">Add</button>
+  </div>
+</form>
+
+<div class="table-responsive">
+  <table class="table align-middle">
+    <thead>
+      <tr><th>Name</th><th>Avg minutes</th><th>Active</th><th>Tickets</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for s in all_services %}
+      <tr>
+        <td><input form="edit-{{ s.id }}" name="name" class="form-control" maxlength="60" value="{{ s.name }}" required aria-label="Service name"></td>
+        <td><input form="edit-{{ s.id }}" name="avg_minutes" type="number" min="1" class="form-control" value="{{ s.avg_minutes }}" required aria-label="Average minutes"></td>
+        <td><input form="edit-{{ s.id }}" name="active" type="checkbox" class="form-check-input" {% if s.active %}checked{% endif %} aria-label="Active"></td>
+        <td>{{ counts[s.id] }}</td>
+        <td class="text-nowrap">
+          <button form="edit-{{ s.id }}" class="btn btn-outline-primary btn-sm">Save</button>
+          <button form="delete-{{ s.id }}" class="btn btn-outline-danger btn-sm">Delete</button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% for s in all_services %}
+<form id="edit-{{ s.id }}" method="post" action="{{ url_for('service_edit', service_id=s.id) }}"></form>
+<form id="delete-{{ s.id }}" method="post" action="{{ url_for('service_delete', service_id=s.id) }}"
+      data-confirm="Delete {{ s.name }}? This cannot be undone."></form>
+{% endfor %}
+<a href="{{ url_for('staff_dashboard') }}">Back to staff dashboard</a>
+{% endblock %}
