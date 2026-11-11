@@ -2,44 +2,56 @@
 {% block title %}Join the queue · DockQ{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-  <div class="col-12 col-md-8 col-lg-6">
-    <h1 class="h3 mb-3">Join the queue</h1>
+<h1 class="h3 mb-3">Join the queue</h1>
 
-    <form method="post" action="{{ url_for('join') }}" novalidate id="join-form">
-      {% for fid, label, ac in [("driver", "Driver name", "name"),
-                                ("plate", "Truck plate number", "off"),
-                                ("company", "Company", "organization")] %}
-      <div class="mb-3">
-        <label for="{{ fid }}" class="form-label">{{ label }}</label>
-        <input id="{{ fid }}" name="{{ fid }}" type="text" autocomplete="{{ ac }}" required
-               class="form-control form-control-lg {% if errors.get(fid) %}is-invalid{% endif %}"
-               value="{{ form.get(fid, '') }}"
-               {% if errors.get(fid) %}aria-describedby="{{ fid }}-error"{% endif %}>
-        {% if errors.get(fid) %}
-          <div id="{{ fid }}-error" class="invalid-feedback">{{ errors[fid] }}</div>
-        {% endif %}
-      </div>
-      {% endfor %}
+<form method="post" action="{{ url_for('join') }}" id="join-form" class="card card-body" novalidate>
 
-      <div class="mb-3">
-        <label for="service_id" class="form-label">Service</label>
-        <select id="service_id" name="service_id" required
-                class="form-select form-select-lg {% if errors.get('service_id') %}is-invalid{% endif %}"
-                {% if errors.get('service_id') %}aria-describedby="service_id-error"{% endif %}>
-          <option value="">Loading or unloading?</option>
-          {% for s in services %}
-            <option value="{{ s.id }}"
-              {% if form.get('service_id') == s.id|string %}selected{% endif %}>{{ s.name }}</option>
-          {% endfor %}
-        </select>
-        {% if errors.get('service_id') %}
-          <div id="service_id-error" class="invalid-feedback">{{ errors['service_id'] }}</div>
-        {% endif %}
-      </div>
-
-      <button type="submit" class="btn btn-primary btn-lg w-100">Get a ticket</button>
-    </form>
+  <div class="mb-3">
+    <label for="driver" class="form-label">Driver name</label>
+    <input id="driver" name="driver" type="text" class="form-control form-control-lg{% if errors.driver %} is-invalid{% endif %}"
+           maxlength="80" required autocomplete="name" value="{{ form.get('driver', '') }}">
+    {% if errors.driver %}<div class="invalid-feedback">{{ errors.driver }}</div>{% endif %}
   </div>
-</div>
+
+  <div class="mb-3">
+    <label for="plate" class="form-label">Plate number</label>
+    <input id="plate" name="plate" type="text" class="form-control form-control-lg text-uppercase{% if errors.plate %} is-invalid{% endif %}"
+           maxlength="12" required autocapitalize="characters" aria-describedby="plate-help"
+           value="{{ form.get('plate', '') }}">
+    <div id="plate-help" class="form-text">4 to 12 capital letters, numbers, spaces or dashes. Example: ABC 1234</div>
+    {% if errors.plate %}<div class="invalid-feedback d-block">{{ errors.plate }}</div>{% endif %}
+  </div>
+
+  <div class="mb-3">
+    <label for="vehicle_type" class="form-label">Type of vehicle</label>
+    <select id="vehicle_type" name="vehicle_type" class="form-select form-select-lg" required>
+      {% for v in vehicle_types %}
+        <option value="{{ v }}" {% if form.get('vehicle_type', 'other') == v %}selected{% endif %}>
+          {{ v|capitalize }}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label for="company" class="form-label">Company (optional)</label>
+    <input id="company" name="company" type="text" class="form-control form-control-lg" maxlength="120"
+           value="{{ form.get('company', '') }}">
+  </div>
+
+  <div class="mb-3">
+    <label for="service_id" class="form-label">What do you need?</label>
+    <select id="service_id" name="service_id" class="form-select form-select-lg{% if errors.service_id %} is-invalid{% endif %}" required>
+      <option value="">Choose a service</option>
+      {% for s in services %}
+        <option value="{{ s.id }}" {% if form.get('service_id', '')|string == s.id|string %}selected{% endif %}>
+          {{ s.name }} (about {{ s.avg_minutes }} min)
+        </option>
+      {% endfor %}
+    </select>
+    {% if errors.service_id %}<div class="invalid-feedback">{{ errors.service_id }}</div>{% endif %}
+  </div>
+
+  <button type="submit" class="btn btn-primary btn-lg">Get a ticket</button>
+</form>
 {% endblock %}

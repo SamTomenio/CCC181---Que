@@ -37,16 +37,24 @@ def format_time(dt):
     return dt.astimezone().strftime("%b %d, %Y %I:%M %p")
 
 
-STATUS_INFO = {
-    "waiting": {"label": "Waiting", "color": "warning",
-                "message": "You are in the queue. Keep this page open."},
-    "called": {"label": "Called", "color": "success",
-               "message": "Please proceed to your bay now."},
-    "served": {"label": "Served", "color": "secondary",
-               "message": "You have been served. Thank you."},
-    "left": {"label": "Left", "color": "danger",
-             "message": "This ticket is closed."},
-}
+def status_info(status, position=None, wait=None):
+    """Label, colour and message that the ticket page shows."""
+    if status == "waiting":
+        if position == 1:
+            msg = "You are next in line."
+        else:
+            msg = f"{position - 1} trucks ahead of you."
+        if wait:
+            msg += f" About {wait} minutes."
+        return {"label": "Waiting", "color": "warning", "message": msg}
+    if status == "called":
+        return {"label": "Called", "color": "success",
+                "message": "It is your turn. Please proceed."}
+    if status == "served":
+        return {"label": "Served", "color": "secondary",
+                "message": "You have been served. Thank you."}
+    return {"label": "Left", "color": "danger",
+            "message": "This ticket is closed."}
 
 
 def describe(t):
@@ -56,7 +64,8 @@ def describe(t):
     if t.status == "waiting":
         ahead = db.session.scalar(
             select(func.count()).select_from(Ticket).where(
-                Ticket.status == "waiting", Ticket.created_at < t.created_at))
+                Ticket.status == "waiting", Ticket.service_id == t.service_id,
+                Ticket.created_at < t.created_at))
         position = ahead + 1
         wait_minutes = position * t.service.avg_minutes
     return {
@@ -71,7 +80,7 @@ def describe(t):
         "service": t.service.name,
         "service_id": t.service_id,
         "status": t.status,
-        "info": STATUS_INFO.get(t.status, STATUS_INFO["waiting"]),
+        "info": status_info(t.status, position, wait_minutes),
         "bay": t.bay,
         "arrive_by": t.arrive_by.strftime("%I:%M %p").lstrip("0") if t.arrive_by else "",
         "arrive_by_value": t.arrive_by.strftime("%H:%M") if t.arrive_by else "",
@@ -239,7 +248,9 @@ def ticket(ticket_id):
 
 @app.route("/queue/<int:ticket_id>/status.json")
 def ticket_status(ticket_id):
-    return jsonify(describe(get_ticket_or_404(ticket_id)))
+    d = describe(get_ticket_or_404(ticket_id))
+    d.update(d["info"])  # label, color, message at the top level
+    return jsonify(d)
 
 
 @app.route("/queue/<int:ticket_id>/leave", methods=["POST"])
