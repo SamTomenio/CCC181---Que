@@ -8,7 +8,7 @@
       <div class="card-body">
         <h1 class="h5 text-body-secondary">Your ticket</h1>
         <p class="display-1 fw-bold mb-0">#{{ ticket.number }}</p>
-        <p class="mb-1">{{ service.name }} · {{ ticket.plate }}</p>
+        <p class="mb-1">{{ service.name }} · {{ ticket.plate }} · {{ ticket.vehicle_type|capitalize }}</p>
         {% if ticket.joined_at %}
           <p class="small text-body-secondary mb-3">Joined {{ ticket.joined_at }}</p>
         {% endif %}
@@ -93,7 +93,7 @@
       document.getElementById("arrive-line").classList.toggle("d-none", !data.arrive_by);
 
       // When the ticket becomes finished, reload so the OK button appears.
-      if (data.status !== initialStatus && (data.status === "served" || data.status === "no-show")) {
+      if (data.status !== initialStatus && (data.status === "served" || data.status === "left")) {
         location.reload();
       }
     } catch (err) {

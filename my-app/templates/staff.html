@@ -2,13 +2,17 @@
 {% block title %}Staff dashboard · DockQ{% endblock %}
 
 {% block content %}
-<h1 class="h3 mb-3">Staff dashboard</h1>
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+  <h1 class="h3 mb-0">Staff dashboard</h1>
+  <a href="{{ url_for('services_list') }}" class="btn btn-outline-secondary btn-sm">Manage services</a>
+</div>
 
 <div class="row g-2 mb-3">
   {% for s in services %}
   <div class="col-6">
     <div class="card"><div class="card-body py-2">
       <span class="fs-3 fw-bold">{{ counts[s.id] }}</span> waiting for {{ s.name|lower }}
+      {% if not s.active %}<span class="badge text-bg-secondary ms-1">off</span>{% endif %}
     </div></div>
   </div>
   {% endfor %}
@@ -57,8 +61,9 @@
       <tr>
         <th scope="col"><input type="checkbox" id="select-all" class="form-check-input"
                                aria-label="Select all trucks in the table"></th>
-        <th scope="col">#</th><th scope="col">Plate</th><th scope="col">Driver</th>
-        <th scope="col">Service</th><th scope="col">Status</th><th scope="col">Actions</th>
+        <th scope="col">#</th><th scope="col">Plate</th><th scope="col">Vehicle</th><th scope="col">Driver</th>
+        <th scope="col">Service</th><th scope="col">Joined</th>
+        <th scope="col">Status</th><th scope="col">Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -68,15 +73,16 @@
                    form="bulk-form" aria-label="Select ticket {{ t.number }}"></td>
         <th scope="row">{{ t.number }}</th>
         <td class="fw-bold">{{ t.plate }}</td>
+        <td>{{ t.vehicle_type|capitalize }}</td>
         <td>{{ t.driver }}</td>
         <td>{{ names[t.service_id] }}</td>
+        <td class="text-nowrap">{{ t.joined_at }}</td>
         <td>
           <span class="badge text-bg-{{ 'success' if t.status == 'called' else 'warning' }}">{{ t.status|capitalize }}</span>
           {% if t.bay %} Bay {{ t.bay }}{% endif %}
           {% if t.arrive_by %}<div class="small text-body-secondary">Arrive by {{ t.arrive_by }}</div>{% endif %}
         </td>
         <td class="text-nowrap">
-          {% if t.status in ('waiting', 'called') %}
           <form method="post" class="d-inline-flex gap-1 align-items-center me-2"
                 action="{{ url_for('staff_action', ticket_id=t.number, action='call') }}">
             <input type="text" name="bay" class="form-control form-control-sm" style="width:4.5rem"
@@ -85,17 +91,20 @@
                    aria-label="Arrive by time for ticket {{ t.number }}">
             <button class="btn btn-outline-primary" aria-label="Call ticket {{ t.number }}">{{ 'Update' if t.status == 'called' else 'Call' }}</button>
           </form>
-          {% endif %}
           <form method="post" class="d-inline" action="{{ url_for('staff_action', ticket_id=t.number, action='serve') }}">
             <button class="btn btn-success" aria-label="Mark ticket {{ t.number }} as served">Serve</button>
           </form>
           <form method="post" class="d-inline" action="{{ url_for('staff_action', ticket_id=t.number, action='no-show') }}">
             <button class="btn btn-outline-danger" aria-label="Mark ticket {{ t.number }} as no-show">No-show</button>
           </form>
+          <form method="post" class="d-inline" action="{{ url_for('staff_delete', ticket_id=t.number) }}"
+                data-confirm="Delete ticket #{{ t.number }} permanently? This cannot be undone.">
+            <button class="btn btn-outline-secondary" aria-label="Delete ticket {{ t.number }}">Delete</button>
+          </form>
         </td>
       </tr>
       {% else %}
-      <tr><td colspan="7" class="text-center text-body-secondary py-4">No trucks waiting right now.</td></tr>
+      <tr><td colspan="9" class="text-center text-body-secondary py-4">No trucks waiting right now.</td></tr>
       {% endfor %}
     </tbody>
   </table>
@@ -104,10 +113,10 @@
 <h2 class="h4 mt-5">Archive</h2>
 <div class="table-responsive">
   <table class="table align-middle">
-    <caption>Finished tickets (served or no-show), newest first</caption>
+    <caption>Finished tickets (served, no-show or left), newest first</caption>
     <thead>
       <tr>
-        <th scope="col">#</th><th scope="col">Plate</th><th scope="col">Driver</th>
+        <th scope="col">#</th><th scope="col">Plate</th><th scope="col">Vehicle</th><th scope="col">Driver</th>
         <th scope="col">Service</th><th scope="col">Result</th>
         <th scope="col">Joined</th><th scope="col">Finished</th>
         <th scope="col">Driver OK</th><th scope="col">Action</th>
@@ -118,6 +127,7 @@
       <tr>
         <th scope="row">{{ t.number }}</th>
         <td class="fw-bold">{{ t.plate }}</td>
+        <td>{{ t.vehicle_type|capitalize }}</td>
         <td>{{ t.driver }}</td>
         <td>{{ names[t.service_id] }}</td>
         <td>
@@ -128,13 +138,13 @@
         <td class="text-nowrap">{{ t.driver_ok_at or 'Not yet' }}</td>
         <td>
           <form method="post" action="{{ url_for('staff_delete', ticket_id=t.number) }}"
-                onsubmit="return confirm('Delete ticket #{{ t.number }} permanently?');">
+                data-confirm="Delete ticket #{{ t.number }} permanently? This cannot be undone.">
             <button class="btn btn-outline-danger" aria-label="Delete archived ticket {{ t.number }}">Delete</button>
           </form>
         </td>
       </tr>
       {% else %}
-      <tr><td colspan="9" class="text-center text-body-secondary py-4">Nothing archived yet.</td></tr>
+      <tr><td colspan="10" class="text-center text-body-secondary py-4">Nothing archived yet.</td></tr>
       {% endfor %}
     </tbody>
   </table>
