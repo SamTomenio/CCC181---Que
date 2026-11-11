@@ -107,7 +107,8 @@ The problems I found in my schema, from [schema-review.md](schema-review.md):
 | Read | `GET /queue/<id>` and `GET /staff` | FR-02, FR-03, FR-04, FR-05, FR-06, FR-07, FR-08 | ![Join success](screenshots/join-success.JPG) ![Staff](screenshots/staff.JPG) |
 | Update | `POST /staff/call-next`, `POST /staff/call-selected` and `POST /staff/<id>/<action>` | FR-06, FR-07, FR-08, FR-10, FR-11, FR-12  | ![Staff call](screenshots/staff-call.JPG) ![Staff served](screenshots/staff-served.JPG) |
 | Soft delete | `POST /queue/<id>/leave` | FR-10 | ![Ticket left](screenshots/ticket-left.JPG) |
-| Hard delete | `POST /staff/<id>/delete` | FR-08, FR-10, FR-11, FR-12 | ![Archive delete](screenshots/staff-archive-delete.JPG) ![Staff delete](screenshots/staff-delete.JPG) |
+| Hard delete | `POST /staff/<id>/delete` | FR-08, FR-10, FR-11, FR-12 | ![Archive delete](screenshots/staff-archive-delete.JPG) ![Staff delete](screenshots/staff-delete.JPG)  ![Staff delete](screenshots/hard-delete.JPG) |
+| Manage services | `GET/POST /staff/services` | FR-11 | ![Manage Service](screenshots/services.JPG) |
 
 
 ## Validation
